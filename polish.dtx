@@ -23,7 +23,7 @@
 % and covered by LPPL is defined by the unpacking scripts (with
 % extension .ins) which are part of the distribution.
 % \fi
-% \CheckSum{690}
+% \CheckSum{699}
 %
 % \iffalse
 %    Tell the \LaTeX\ system who we are and write an entry on the
@@ -38,10 +38,13 @@
 %\iffalse
 %<*filedriver>
 \documentclass{ltxdoc}
-\usepackage[T1]{fontenc}
 \usepackage{lmodern}
+\usepackage[QX]{fontenc}
+\usepackage{array,ot1patch}
+\usepackage[hidelinks]{hyperref}
 \title{Babel support for Polish}
-\author{current maintainer: Marcin Woliński} 
+\author{\normalsize current maintainer: Marcin Woliński}
+\date{Version \fileversion, \filedate}
 \newcommand*\babel{\textsf{babel}}
 \newcommand*\langvar{$\langle \it lang \rangle$}
 \newcommand*\note[1]{}
@@ -53,6 +56,7 @@
 %</filedriver>
 %\fi
 % \GetFileInfo{polish.dtx}
+% \maketitle
 %
 % \changes{polish-1.1c}{1994/06/26}{Removed the use of \cs{filedate}
 %    and moved identification after the loading of babel.def}
@@ -61,60 +65,161 @@
 %    with \LaTeX, moved the definition of \cs{atcatcode} right to the
 %    beginning.}
 %
-%  \section{The Polish language}
+%    \section{Basic Usage}
+%
+%    Typesetting Polish with \TeX\ is, surprisingly, more difficult
+%    than setting most other European languages.  Polish uses several
+%    accented characters.  Some of them, including \textit{ć, ń, ó, ś,
+%    ź, ż, Ć, Ń, Ó, Ś, Ź, Ż}, can be reasonably rendered by attaching
+%    “floating diacritics” to Latin letters.  More problematic is the
+%    letter \textit{ł/Ł}, but legend has it that Donald Knuth needed
+%    to include the name \textit{Łukasiewicz} in his TAOCP, so he
+%    included a “diacritic” stroke in his Computer Modern fonts.
+%    Unfortunately, he had no reason to mention \textit{Wałęsa}
+%    anywhere in TAOCP, and in result the infamous
+%    “ogonek\footnote{This seems to be the official English name of
+%    the diacritic:\\ \url{https://en.wikipedia.org/wiki/Ogonek}.}
+%    accent” is not present in original \TeX\ fonts.  A different set
+%    of fonts is necessary to properly render Polish characters with
+%    ogonek: \emph{ą, ę, Ą, Ę} (these characters are also used in
+%    Lithuanian along with \textit{į, ų, Į, Ų}).
+%
+%    In Unicode \TeX\ engines (Xe\LaTeX, lua\LaTeX), Latin Modern
+%    fonts are used by default and these include a rich repertoire of
+%    accented Latin characters. With these engines, it’s enough to
+%    load Babel with the Polish module:
+% \begin{verbatim}
+% \usepackage[polish]{babel}
+% \end{verbatim}
+%
+%    The matter is more complicated in the case of classical \LaTeX\
+%    (including pdf\LaTeX).  To obtain correct Polish letters, it is
+%    necessary to switch the document to a suitable font encoding.
+%    One possibility is:
+% \begin{verbatim}
+% \usepackage[OT4]{fontenc}
+% \usepackage[polish]{babel}
+% \end{verbatim}
+%    This will result in a document typeset using the Polish
+%    adaptation of Knuth’s classical Computer Modern fonts.
+%
+%    A more flexible option is the European font encoding T1, which
+%    covers most of European languages written in the Latin script.
+%    Unfortunately, the default fonts in this encoding are bitmap
+%    based, which will result in sub-optimal rendering. So with T1 it
+%    is necessary to select a different font family as well.  A safe
+%    option is to use Latin Modern (Latin Modern is practically
+%    identical to Computer Modern, a new name was needed to keep
+%    backward compatibility of Computer Modern):
+% \begin{verbatim}
+% \usepackage{lmodern}
+% \usepackage[T1]{fontenc}
+% \usepackage[polish]{babel}
+% \end{verbatim}
+%    Many font switching packages work with T1.  Besides Latin Modern,
+%    you can expect well designed Polish characters to be present in
+%    all fonts from the \TeX\ Gyre collection (in particular the Times
+%    lookalike \file{tgtermes}, Bookmanish \file{tgbonum}, Century
+%    Schoolbook-like \file{tgschola}, etc.) and in other fonts
+%    originating from the Polish \TeX\ Users Group
+%    GUST\footnote{\url{http://www.gust.org.pl/projects/e-foundry}}.
+%    With Unicode engines you can also use any OpenType font present
+%    on your system.
+%
+%    It is also worth noting, that ogonek is not really an accent: it
+%    has to be designed separately for each base letter to get a
+%    typographically acceptable result.  This is not the case, e.g.,
+%    for the packages in the PSNFSS set, in particular
+%    \file{times.sty}.  Although these support the T1 encoding, the
+%    ogonek protrudes from the characters at some random angle (this
+%    is particularly visible in the case of the letter ę):
+%    \begin{center}\fontencoding{T1}
+%      \begin{tabular}{l>\Huge l<{gąbkę}>{\Huge\itshape\strut} l<{gąbkę}}
+%          \TeX\ Gyre Termes & \fontfamily{qtm}\selectfont &
+%          \fontfamily{qtm}\selectfont \\
+%          PSNFF Times & \fontfamily{ptm}\selectfont &
+%          \fontfamily{ptm}\selectfont \\
+%      \end{tabular}
+%    \end{center}
+%    If quality is your goal, do not use \file{times.sty} for Polish.
+%
+%    Another element necessary for successful typesetting of Polish is
+%    a way to encode Polish accented characters in the source file.
+%    Fortunately, nowadays all \LaTeX\ engines assume input files to
+%    be in Unicode, in its UTF-8 form, so if you are on a modern
+%    system, this will work by default.  (If you are forced to use
+%    some old byte-based encoding like the standard ISO 8859-2 or its
+%    Windows counterpart CP1250, please read the documentation of the
+%    \file{inputenc} package.)
+%
+%
+%\section{The Functions of this Module}
+%
+%    [To be described…]
 %
 %    The file \file{\filename}\footnote{The file described in this
 %    section has version number \fileversion\ and was last revised on
 %    \filedate.}  defines all the language-specific macros for the
 %    Polish language.
 %
-%    \begin{table}[htb]
-%     \begin{center}
-%     \begin{tabular}{lp{8cm}}
-%      \verb="|= & disable ligature at this position.\\
-%      |"-| & an explicit hyphen sign, allowing hyphenation
-%                  in the rest of the word.\\
-%      |""| & like |"-|, but producing no hyphen sign
-%                  (for compund words with hyphen, e.g.\ |x-""y|). \\
-%      |"`| & for Polish left double quotes: „   \\
-%      |"'| & for Polish right double quotes: ”                  \\
-%      |"<| & for French left double quotes: « (used in Polish as
-%      second level quotes)\\
-%      |">| & for French right double quotes: »\\
-%     \end{tabular}
-%     \caption{Shortcuts provided by \file{polish.ldf}}
-%     \label{tab:polish-quote}
-%     \end{center}
-%    \end{table}
+%    \begin{table}[ht]
+%      \begin{center}
+%        \begin{tabular}{lp{8cm}}
+%            \verb="|= & disable ligature at this position.\\
+%            |"-| & soft hyphen\\
+%            |"=| & hard hyphen \\
+%            |"`| & for Polish left double quotes: „   \\
+%            |"'| & for Polish right double quotes: ”                  \\
+%            |"<| & for French left double quotes: « (used in Polish as
+%                     second level quotes)\\
+%            |">| & for French right double quotes: »\\
+%          \end{tabular}
+%          \caption{Shortcuts provided by \file{polish.ldf}}
+%          \label{tab:polish-quote}
+%        \end{center}
+%      \end{table}
 %
-% polish-compat = polish.ldf 2005/03/31 v1.2l 
+%
+% \section{A Note on Compatibility}
+% \label{sec:compat}
+%
+%    Incompatible changes were introduced in version 1.3 of this module.
+%    In case of problems with processing legacy documents, please
+%    try replacing the module invocation with the following:
+% \begin{verbatim}
+% \usepackage[polish-compat]{babel}
+% \end{verbatim}
+%    This causes an exact copy of the module version v1.2l of
+%    2005/03/31  to be loaded.  However, please be aware that this old
+%    code has known problems (see Section~\ref{sec:compat-code}).
+%
 %    For this language the character |"| is made active. In
 %    table~\ref{tab:polish-quote} an overview is given of its purpose.
 %    \begin{table}[htb]
-%     \begin{center}
+%     \begin{center}\fontencoding{OT1}\selectfont
 %     \begin{tabular}{lp{8cm}}
-%      |"a| & or |\aob|, for tailed-a (like \c{a})\\
-%      |"A| & or |\Aob|, for tailed-A (like \c{A})\\
-%      |"e| & or |\eob|, for tailed-e (like \c{e})\\
-%      |"E| & or |\Eob|, for tailed-E (like \c{E})\\
-%      |"c| & or |\'c|,  for accented c (like \'c),
-%                      same with uppercase letters and n,o,s\\
+%      |"a| & or |\aob|, for a-ogonek (rendered ą)\\
+%      |"A| & or |\Aob|, for A-ogonek (rendered \k{A})\\
+%      |"e| & or |\eob|, for e-ogonek (rendered \k{e})\\
+%      |"E| & or |\Eob|, for E-ogonek (rendered \k{E})\\
+%      |"c| & or |\'c|,  for accented c (\'c),
+%                      same with uppercase letters and n, o, s\\
 %      |"l| & or |\lpb{}|, for l with stroke (like \l)\\
 %      |"L| & or |\Lpb{}|, for L with stroke (like \L)\\
-%      |"r| & or |\zkb{}|, for pointed z (like \.z), cf.
+%      |"r| & or |\zkb{}|, for z-dot-accent (\.z), cf.
 %      pronounciation\\
-%      |"R| & or |\Zkb{}|, for pointed Z (like \.Z)\\
-%      |"z| & or |\'z|,  for accented z\\
-%      |"Z| & or |\'Z|,  for accented Z\\
+%      |"R| & or |\Zkb{}|, for Z-dot-accent (\.Z)\\
+%      |"z| & or |\'z|,  for accented z (ź)\\
+%      |"Z| & or |\'Z|,  for accented Z (Ź)\\
 %      \verb="|= & disable ligature at this position.\\
 %      |"-| & an explicit hyphen sign, allowing hyphenation
 %                  in the rest of the word.\\
 %      |""| & like |"-|, but producing no hyphen sign
 %                  (for compund words with hyphen, e.g.\ |x-""y|). \\
-%      |"`| & for German left double quotes (looks like ,,).   \\
-%      |"'| & for German right double quotes.                  \\
-%      |"<| & for French left double quotes (similar to $<<$). \\
-%      |">| & for French right double quotes (similar to $>>$).\\
+%      |"`| & for Polish left double quote (,,).   \\
+%      |"'| & for Polish right double quote ('').                  \\
+%      |"<| & for French left double quote (\guillemotleft). \\
+%      |">| & for French right double quote (\guillemotright).\\
 %     \end{tabular}
 %     \end{center}
 %     \caption{Shortcuts and commands provided in the compatibility
@@ -149,7 +254,7 @@
 %    \begin{macrocode}
 \ifx\l@polish\@undefined
   \@nopatterns{Polish}
-  \adddialect\l@polish0\fi
+  \adddialect\l@polish\l@unhyphenated\fi
 %    \end{macrocode}
 %
 % \begin{macro}{\captionspolish}
@@ -232,6 +337,10 @@
 \declare@shorthand{polish}{"-}{\bbl@hy@soft}
 \declare@shorthand{polish}{"=}{\babel@texpdf{\bbl@hy@hard}{-}{-}{\textminus}}
 \declare@shorthand{polish}{"|}{\babel@texpdf{\discretionary{-}{}{\kern.03em}}{}{}{}}
+\declare@shorthand{polish}{"`}{\quotedblbase}
+\declare@shorthand{polish}{"'}{\textquotedblright}
+\declare@shorthand{polish}{"<}{\guillemotleft}
+\declare@shorthand{polish}{">}{\guillemotright}
 %    \end{macrocode}
 %    We specify that the polish group of shorthands should be used.
 %    These characters are `turned on' once, later their definition may
@@ -259,13 +368,14 @@
 %</code>
 %    \end{macrocode}
 %
-%\subsection{Compatibility code}
+% \subsection{Compatibility code}
+% \label{sec:compat-code}
 %
-%    This section contains verbatim the code of version v1.2l
+%    This section contains the code of version v1.2l
 %    (2005/03/31) of \file{polish.ldf}, which is used for
 %    \file{polish-compat}. Known problems with this code:
 %    \begin{itemize}
-%    \item The "-shorthands provided do not use LICR, so even with
+%    \item The \texttt{"}-shorthands do not use LICR, so even with
 %      modern fonts the precomposed characters from the font are not
 %      used (in the case of \textit{ą, ę, ł, ż}).
 %    \item The substitute for ogonek accent defined for OT1 is not
@@ -274,6 +384,8 @@
 %      \textit{Część} generated by the command \cs{part}.
 %    \item The code is \textbf{evil}: it redefines \cs{selectfont},
 %      which leads to conflicts with some standard \LaTeX\ packages.
+%      Another known incompatibility is the macro \cs{lll}, which
+%      conflicts with AMS-\LaTeX.
 %    \end{itemize}
 %    
 %    The macro |\LdfInit| takes care of preventing that this file is
