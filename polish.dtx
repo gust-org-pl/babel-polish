@@ -23,7 +23,7 @@
 % and covered by LPPL is defined by the unpacking scripts (with
 % extension .ins) which are part of the distribution.
 % \fi
-% \CheckSum{699}
+% \CheckSum{700}
 %
 % \iffalse
 %    Tell the \LaTeX\ system who we are and write an entry on the
@@ -34,7 +34,7 @@
 %<code|compat>\ProvidesLanguage{polish}
 %\fi
 %\ProvidesFile{polish.dtx}
-        [2022/02/19 1.3 Babel support for Polish]
+        [2022/03/12 1.3 Babel support for Polish]
 %\iffalse
 %<*filedriver>
 \documentclass{ltxdoc}
@@ -77,12 +77,13 @@
 %    included a “diacritic” stroke in his Computer Modern fonts.
 %    Unfortunately, he had no reason to mention \textit{Wałęsa}
 %    anywhere in TAOCP, and in result the infamous
-%    “ogonek\footnote{This seems to be the official English name of
-%    the diacritic:\\ \url{https://en.wikipedia.org/wiki/Ogonek}.}
-%    accent” is not present in original \TeX\ fonts.  A different set
-%    of fonts is necessary to properly render Polish characters with
-%    ogonek: \emph{ą, ę, Ą, Ę} (these characters are also used in
-%    Lithuanian along with \textit{į, ų, Į, Ų}).
+%    “ogonek\footnote{The Polish name seems to also be the official
+%    English name of the diacritic:\\ 
+%    \url{https://en.wikipedia.org/wiki/Ogonek}.}  accent” is not
+%    present in original \TeX\ fonts.  A different set of fonts is
+%    necessary to properly render Polish characters with ogonek:
+%    \emph{ą, ę, Ą, Ę} (these characters are also used in Lithuanian
+%    along with \textit{į, ų, Į, Ų}).
 %
 %    In Unicode \TeX\ engines (Xe\LaTeX, lua\LaTeX), Latin Modern
 %    fonts are used by default and these include a rich repertoire of
@@ -124,15 +125,15 @@
 %    originating from the Polish \TeX\ Users Group
 %    GUST\footnote{\url{http://www.gust.org.pl/projects/e-foundry}}.
 %    With Unicode engines you can also use any OpenType font present
-%    on your system.
+%    on your system (see the \texttt{fontspec} package).
 %
 %    It is also worth noting, that ogonek is not really an accent: it
-%    has to be designed separately for each base letter to get a
+%    has to be separately designed for each base letter to get a
 %    typographically acceptable result.  This is not the case, e.g.,
 %    for the packages in the PSNFSS set, in particular
 %    \file{times.sty}.  Although these support the T1 encoding, the
 %    ogonek protrudes from the characters at some random angle (this
-%    is particularly visible in the case of the letter ę):
+%    is particularly visible in the case of the letter~ę):
 %    \begin{center}\fontencoding{T1}
 %      \begin{tabular}{l>\Huge l<{gąbkę}>{\Huge\itshape\strut} l<{gąbkę}}
 %          \TeX\ Gyre Termes & \fontfamily{qtm}\selectfont &
@@ -141,7 +142,8 @@
 %          \fontfamily{ptm}\selectfont \\
 %      \end{tabular}
 %    \end{center}
-%    If quality is your goal, do not use \file{times.sty} for Polish.
+%    If quality is your goal, do not use \file{times.sty} for Polish,
+%    use \file{tgtermes.sty}.
 %
 %    Another element necessary for successful typesetting of Polish is
 %    a way to encode Polish accented characters in the source file.
@@ -149,33 +151,55 @@
 %    be in Unicode, in its UTF-8 form, so if you are on a modern
 %    system, this will work by default.  (If you are forced to use
 %    some old byte-based encoding like the standard ISO 8859-2 or its
-%    Windows counterpart CP1250, please read the documentation of the
-%    \file{inputenc} package.)
+%    Windows counterpart CP1250, please consult the documentation of
+%    the \file{inputenc} package.)
 %
 %
 %\section{The Functions of this Module}
 %
-%    [To be described…]
+%    As of version 1.3 the code has been updated to the new syntax
+%    provided by Babel to declare language specific elements.  In its
+%    current form, the module is pretty typical \texttt{.ldf} file: it
+%    defines Polish translation of language specific strings used by
+%    \LaTeX, it ensures Polish hyphenation patterns are used, and
+%    activates the setting known as \cs{frenchspacing}.
 %
-%    The file \file{\filename}\footnote{The file described in this
-%    section has version number \fileversion\ and was last revised on
-%    \filedate.}  defines all the language-specific macros for the
-%    Polish language.
+%    Language modules of Babel typically check for the hyphenation
+%    patterns for the language in question.  In their absence, a
+%    warning is issued and English hyphenation patterns are activated.
+%    We find this behaviour inappropriate.  Polish hyphenation
+%    patterns are a part of standard \TeX\ distributions for over 20
+%    years.  Inability to load them signals some configuration problem
+%    in the system.  Moreover, the use of English patterns would lead
+%    to very badly chosen breaks in a Polish text.  Thus, we have
+%    decided to block automatic hyphenation in Polish text in this
+%    case.  In consequence, system configuration has to be corrected or
+%    hyphenation points selected manually.
 %
+%    American typography has a rule, that space after punctuation
+%    characters is larger than typical inter-word space.  This rule is
+%    by default followed by \TeX.  In Polish tradition all spaces
+%    should be of equal width, so we activate \cs{frenchspacing} for
+%    Polish text.
+%
+%    Babel provides a mechanism of language-specific short commands
+%    (shorthands) consisting of the character \texttt{"} followed by
+%    one more character.  Table~\ref{tab:polish-short} lists the
+%    defined commands.
 %    \begin{table}[ht]
+%          \caption{Shorthands provided by the Polish module}
+%          \label{tab:polish-short}
 %      \begin{center}
-%        \begin{tabular}{lp{8cm}}
-%            \verb="|= & disable ligature at this position.\\
+%        \begin{tabular}{lp{10cm}}
 %            |"-| & soft hyphen\\
 %            |"=| & hard hyphen \\
-%            |"`| & for Polish left double quotes: „   \\
-%            |"'| & for Polish right double quotes: ”                  \\
-%            |"<| & for French left double quotes: « (used in Polish as
+%            \verb="|= & disable ligature at this position.\\
+%            |"`| & Polish left double quote: „   \\
+%            |"'| & Polish right double quote: ”                  \\
+%            |"<| & French left double quote: « (used in Polish as
 %                     second level quotes)\\
-%            |">| & for French right double quotes: »\\
+%            |">| & French right double quote: »\\
 %          \end{tabular}
-%          \caption{Shortcuts provided by \file{polish.ldf}}
-%          \label{tab:polish-quote}
 %        \end{center}
 %      \end{table}
 %
@@ -190,22 +214,25 @@
 % \usepackage[polish-compat]{babel}
 % \end{verbatim}
 %    This causes an exact copy of the module version v1.2l of
-%    2005/03/31  to be loaded.  However, please be aware that this old
-%    code has known problems (see Section~\ref{sec:compat-code}).
-%
-%    For this language the character |"| is made active. In
-%    table~\ref{tab:polish-quote} an overview is given of its purpose.
+%    2005/03/31 to be loaded.  However, please be aware that this old
+%    code has known problems (see Section~\ref{sec:compat-code}).  In
+%    compatibility mode a different list of shorthands is available,
+%    they are listed in Table~\ref{tab:polish-quote}.
 %    \begin{table}[htb]
+%     \caption{Shortcuts and commands provided in the compatibility
+%     mode. Be aware that these do not provide typographically
+%     acceptable shapes of Polish accented characters.}
+%     \label{tab:polish-quote}
 %     \begin{center}\fontencoding{OT1}\selectfont
-%     \begin{tabular}{lp{8cm}}
+%     \begin{tabular}{lp{10cm}}
 %      |"a| & or |\aob|, for a-ogonek (rendered ą)\\
 %      |"A| & or |\Aob|, for A-ogonek (rendered \k{A})\\
 %      |"e| & or |\eob|, for e-ogonek (rendered \k{e})\\
 %      |"E| & or |\Eob|, for E-ogonek (rendered \k{E})\\
 %      |"c| & or |\'c|,  for accented c (\'c),
 %                      same with uppercase letters and n, o, s\\
-%      |"l| & or |\lpb{}|, for l with stroke (like \l)\\
-%      |"L| & or |\Lpb{}|, for L with stroke (like \L)\\
+%      |"l| & or |\lpb{}|, for l with stroke (\l)\\
+%      |"L| & or |\Lpb{}|, for L with stroke (\L)\\
 %      |"r| & or |\zkb{}|, for z-dot-accent (\.z), cf.
 %      pronounciation\\
 %      |"R| & or |\Zkb{}|, for Z-dot-accent (\.Z)\\
@@ -222,10 +249,6 @@
 %      |">| & for French right double quote (\guillemotright).\\
 %     \end{tabular}
 %     \end{center}
-%     \caption{Shortcuts and commands provided in the compatibility
-%     mode. Be aware that these do not provide typographically
-%     acceptable shapes of Polish accented characters.}
-%     \label{tab:polish-quote}
 %    \end{table}
 %
 % \StopEventually{}
@@ -271,13 +294,13 @@
   \SetString{\appendixname}{Dodatek}
   \SetString{\contentsname}{Spis treści}
   \SetString{\listfigurename}{Spis rysunków}
-  \SetString{\listtablename}{Spis tablic}
+  \SetString{\listtablename}{Spis tabel}
   \SetString{\indexname}{Skorowidz}
   \SetString{\figurename}{Rysunek}
-  \SetString{\tablename}{Tablica}
+  \SetString{\tablename}{Tabela}
   \SetString{\partname}{Część}
-  \SetString{\enclname}{Załącznik}
-  \SetString{\ccname}{Kopie:}
+  \SetString{\enclname}{Załączniki}
+  \SetString{\ccname}{Do wiadomości}
   \SetString{\headtoname}{Do}
   \SetString{\pagename}{Strona}
   \SetString{\seename}{zob.}
@@ -302,13 +325,13 @@
   \SetString{\appendixname}{Dodatek}
   \SetString{\contentsname}{Spis tre\'sci}
   \SetString{\listfigurename}{Spis rysunk\'ow}
-  \SetString{\listtablename}{Spis tablic}
+  \SetString{\listtablename}{Spis tabel}
   \SetString{\indexname}{Skorowidz}
   \SetString{\figurename}{Rysunek}
-  \SetString{\tablename}{Tablica}
+  \SetString{\tablename}{Tabela}
   \SetString{\partname}{Cz\k{e}\'s\'c}
-  \SetString{\enclname}{Za\l\k{a}cznik}
-  \SetString{\ccname}{Kopie:}
+  \SetString{\enclname}{Za\l\k{a}czniki}
+  \SetString{\ccname}{Do wiadomo\'sci}
   \SetString{\headtoname}{Do}
   \SetString{\pagename}{Strona}
   \SetString{\seename}{zob.}
@@ -371,13 +394,16 @@
 % \subsection{Compatibility code}
 % \label{sec:compat-code}
 %
-%    This section contains the code of version v1.2l
+%    This section contains the code and documentation of version v1.2l
 %    (2005/03/31) of \file{polish.ldf}, which is used for
-%    \file{polish-compat}. Known problems with this code:
+%    \file{polish-compat}. We keep 
+%    it as a compatibility fallback, since (more or less) this version was
+%    available for almost 20 years and some documents may depend on its
+%    idiosyncratic features.  There are known problems with this code:
 %    \begin{itemize}
-%    \item The \texttt{"}-shorthands do not use LICR, so even with
-%      modern fonts the precomposed characters from the font are not
-%      used (in the case of \textit{ą, ę, ł, ż}).
+%    \item The \texttt{"}-shorthands for Polish characters do not use
+%      LICR, so even with modern fonts the precomposed characters from
+%      the font are not used (in the case of \textit{ą, ę, ł, ż}).
 %    \item The substitute for ogonek accent defined for OT1 is not
 %      accessible with standard \cs{k} (besides being hideous).
 %    \item Wrong shape of \textit{ę} is used in the word
