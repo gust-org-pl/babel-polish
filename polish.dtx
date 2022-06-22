@@ -76,7 +76,7 @@
 %    to include the name \textit{Łukasiewicz} in his TAOCP, so he
 %    included a “diacritic” stroke in his Computer Modern fonts.
 %    Unfortunately, he had no reason to mention \textit{Wałęsa}
-%    anywhere in TAOCP, and in result the infamous
+%    anywhere in TAOCP, and in result the 
 %    “ogonek\footnote{The Polish name seems to also be the official
 %    English name of the diacritic:\\ 
 %    \url{https://en.wikipedia.org/wiki/Ogonek}.}  accent” is not
@@ -182,17 +182,25 @@
 %    should be of equal width, so we activate \cs{frenchspacing} for
 %    Polish text.
 %
-%    Babel provides a mechanism of language-specific short commands
+%    Babel provides a mechanism for language-specific short commands
 %    (shorthands) consisting of the character \texttt{"} followed by
 %    one more character.  Table~\ref{tab:polish-short} lists the
-%    defined commands.
+%    commands available for Polish.  The shorthand \texttt{"-} is
+%    similar to the command \cs{-} but the former does not block
+%    automatic hyphenation in the rest of the word.  The shorthand
+%    \texttt{"=} should be used for explicit hyphens in the text.
+%    According to Polish rules, when a break occurs at an explicit
+%    hyphen, the hyphen gets repeated at the beginning of the new
+%    line.  So, e.g., Polish compound adjectives like
+%    \emph{biało-czerwony} `white-and-red' should be input as
+%    \texttt{biało"=czerwony}.
 %    \begin{table}[ht]
 %          \caption{Shorthands provided by the Polish module}
 %          \label{tab:polish-short}
 %      \begin{center}
 %        \begin{tabular}{lp{10cm}}
 %            |"-| & soft hyphen\\
-%            |"=| & hard hyphen \\
+%            |"=| & explicit hyphen repeated after the break \\
 %            \verb="|= & disable ligature at this position.\\
 %            |"`| & Polish left double quote: „   \\
 %            |"'| & Polish right double quote: ”                  \\
@@ -251,7 +259,7 @@
 %     \end{center}
 %    \end{table}
 %
-% \StopEventually{}
+% \StopEventually{}\newpage
 %
 % \section{The code}
 %    \begin{macrocode}
@@ -358,7 +366,7 @@
 %    \begin{macrocode}
 \initiate@active@char{"}
 \declare@shorthand{polish}{"-}{\bbl@hy@soft}
-\declare@shorthand{polish}{"=}{\babel@texpdf{\bbl@hy@hard}{-}{-}{\textminus}}
+\declare@shorthand{polish}{"=}{\babel@texpdf{\bbl@hy@repeat}{-}{-}{\textminus}}
 \declare@shorthand{polish}{"|}{\babel@texpdf{\discretionary{-}{}{\kern.03em}}{}{}{}}
 \declare@shorthand{polish}{"`}{\quotedblbase}
 \declare@shorthand{polish}{"'}{\textquotedblright}
